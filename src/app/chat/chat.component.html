@@ -1,0 +1,24 @@
+<div class="header">
+    <h1 class="title">PipaBot</h1>
+</div>
+
+<div class="chat-container">
+    <div class="messages">
+        <div *ngFor="let message of messages" class="message"
+            [ngClass]="{'user': message.sender === 'user', 'machine': message.sender === 'machine'}">
+            <img *ngIf="message.type === 'image'" [src]="message.content" alt="Imagen">
+            <span *ngIf="message.type === 'text'">{{ message.content }}</span>
+        </div>
+    </div>
+    <div class="input-area">
+        <input type="text" [(ngModel)]="newMessage" placeholder="Escribe un mensaje...">
+        <button type="button" (click)="sendMessage()">
+            <img src="assets/images/send-2.png" alt="Enviar" style="width: 24px; height: 24px;">
+        </button>
+        <label for="image-upload">
+            <img src="assets/images/upload.png" alt="Adjuntar imagen"
+                style="width: 24px; height: 24px; cursor: pointer;">
+        </label>
+        <input type="file" id="image-upload" accept="image/*" (change)="onImageSelected($event)" style="display: none;">
+    </div>
+</div>
