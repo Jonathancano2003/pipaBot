@@ -1,24 +1,58 @@
-<div class="header">
-    <h1 class="title">PipaBot</h1>
-</div>
-
-<div class="chat-container">
-    <div class="messages">
-        <div *ngFor="let message of messages" class="message"
-            [ngClass]="{'user': message.sender === 'user', 'machine': message.sender === 'machine'}">
-            <img *ngIf="message.type === 'image'" [src]="message.content" alt="Imagen">
-            <span *ngIf="message.type === 'text'">{{ message.content }}</span>
+<section>
+    <div class="container py-5">
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-10 col-lg-8 chat-container">
+          <div class="card" id="chat1" style="border-radius: 15px;">
+            
+            <!-- Cabecera del Chat -->
+            <div class="card-header d-flex justify-content-between align-items-center p-3 bg-info text-white">
+              <p class="mb-0 fw-bold">PipaBot</p>
+            </div>
+  
+            <!-- Cuerpo del Chat -->
+            <div class="card-body chat-messages">
+              
+              <!-- Mensajes -->
+              <div *ngFor="let message of messages" class="d-flex mb-3"
+                [ngClass]="{'justify-content-start': message.sender === 'machine', 'justify-content-end': message.sender === 'user'}">
+  
+                <!-- Avatar del Bot -->
+                <img *ngIf="message.sender === 'machine'" [src]="message.avatar" alt="Bot" class="rounded-circle avatar">
+  
+                <!-- Contenedor de mensaje -->
+                <div class="message-box" 
+                     [ngClass]="{'user-message': message.sender === 'user', 'machine-message': message.sender === 'machine'}">
+                  <span *ngIf="message.type === 'text'" class="small">{{ message.content }}</span>
+                  <img *ngIf="message.type === 'image'" [src]="message.content" alt="Imagen" class="img-fluid rounded">
+                </div>
+  
+                <!-- Avatar del Usuario -->
+                <img *ngIf="message.sender === 'user'" [src]="message.avatar" alt="User" class="rounded-circle avatar">
+              </div>
+  
+            </div>
+  
+            <!-- Área de entrada de texto -->
+            <div class="card-footer p-3">
+              <div class="input-container">
+                <input type="text" class="form-control" placeholder="Escribe un mensaje..." [(ngModel)]="newMessage" (keyup.enter)="sendMessage()">
+                
+                <!-- Botón de enviar con icono -->
+                <button class="btn btn-primary" type="button" (click)="sendMessage()">
+                  <img src="assets/images/send-2.png" alt="Enviar">
+                </button>
+                
+                <!-- Botón de adjuntar imagen con icono -->
+                <input type="file" id="image-upload" accept="image/*" (change)="onImageSelected($event)" hidden>
+                <label for="image-upload" class="btn btn-secondary">
+                  <img src="assets/images/upload.png" alt="Adjuntar imagen">
+                </label>
+              </div>
+            </div>
+  
+          </div>
         </div>
+      </div>
     </div>
-    <div class="input-area">
-        <input type="text" [(ngModel)]="newMessage" placeholder="Escribe un mensaje...">
-        <button type="button" (click)="sendMessage()">
-            <img src="assets/images/send-2.png" alt="Enviar" style="width: 24px; height: 24px;">
-        </button>
-        <label for="image-upload">
-            <img src="assets/images/upload.png" alt="Adjuntar imagen"
-                style="width: 24px; height: 24px; cursor: pointer;">
-        </label>
-        <input type="file" id="image-upload" accept="image/*" (change)="onImageSelected($event)" style="display: none;">
-    </div>
-</div>
+  </section>
+  

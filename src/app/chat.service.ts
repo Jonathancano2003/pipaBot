@@ -7,11 +7,10 @@ import { Observable } from 'rxjs';
 })
 export class ChatService {
 
-    private backendUrl = 'http://localhost:8000/api/gemini/receive'; // URL CORRECTA: /api/gemini/receive
-
+    private backendUrl = 'https://pipabot.nite.black/api/';
     constructor(private http: HttpClient) { }
 
-    sendMessage(message: string, imageBase64?: string) { 
-        return this.http.post(this.backendUrl, { message: message, imageBase64: imageBase64 }); 
+    sendMessage(message: string, imageBase64?: string) {
+        return this.http.post(this.backendUrl, { message: message, imageBase64: imageBase64 });
     }
 }
