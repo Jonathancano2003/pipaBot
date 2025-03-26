@@ -1,0 +1,31 @@
+
+<div class="form-overlay">
+  <div class="form-container">
+    <h2 class="form-title">Iniciar Sesión</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-item" [class.has-error]="isSubmitted && loginForm.get('username')?.invalid">
+        <input type="text" formControlName="username" placeholder="Usuario" />
+        <p class="form-feedback" *ngIf="isSubmitted && loginForm.get('username')?.invalid">
+          Favor de revisar este campo
+        </p>
+      </div>
+
+      <div class="form-item" [class.has-error]="isSubmitted && loginForm.get('password')?.invalid">
+        <input type="password" formControlName="password" placeholder="Contraseña" />
+        <p class="form-feedback" *ngIf="isSubmitted && loginForm.get('password')?.invalid">
+          Favor de revisar este campo
+        </p>
+      </div>
+
+      <div class="form-item">
+        <button type="submit" class="form-button">
+          <span *ngIf="!loading">Enviar</span>
+          <div class="form-loading" *ngIf="loading">
+            <span></span><span></span><span></span>
+          </div>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
