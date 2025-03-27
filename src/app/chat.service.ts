@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ChatService {
 
-  private backendUrl = 'http://localhost:8000/api/gemini/receive';
+  private backendUrl = 'https://pipabot.nite.black/api/gemini/receive';
 
   constructor(private http: HttpClient) { }
 
@@ -19,7 +19,7 @@ export class ChatService {
     });
   }
   resetChat() {
-    return this.http.post('http://localhost:8000/api/gemini/reset', {});
+    return this.http.post('https://pipabot.nite.black/api/gemini/reset', {});
   }
 
 

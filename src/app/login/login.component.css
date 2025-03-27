@@ -6,6 +6,16 @@
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
+.form-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.form-logo img {
+  max-width: 100px;
+  height: auto;
+}
 
 *:focus {
   outline: none;
@@ -119,7 +129,7 @@ input {
 
 @media only screen and (max-width: 640px) {
   .form-container {
-    width: 100%;
+    width: 100vw;
     min-width: 100%;
     border-radius: 0;
     height: 100vh;
