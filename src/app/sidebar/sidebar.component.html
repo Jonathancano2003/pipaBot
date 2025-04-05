@@ -1,0 +1,7 @@
+<div class="sidebar bg-dark text-light vh-100 p-2">
+  <h5 class="text-center mt-2">Chats recientes</h5>
+  
+  <div *ngFor="let chat of chats">
+    <app-card-chat [chat]="chat"></app-card-chat>
+  </div>
+</div>

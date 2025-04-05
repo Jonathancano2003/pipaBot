@@ -1,0 +1,9 @@
+<div class="admin-wrapper">
+    <h2>Configuración de Prompt del Bot</h2>
+
+    <textarea [(ngModel)]="prompt" rows="15" placeholder="Escribe el nuevo prompt aquí..."></textarea>
+
+    <button class="btn" (click)="updatePrompt()">Actualizar Prompt</button>
+
+    <p class="status">{{ status }}</p>
+</div>

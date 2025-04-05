@@ -1,0 +1,13 @@
+.card {
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .card:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .card-text, .card-title {
+    max-width: 100%;
+  }
+  

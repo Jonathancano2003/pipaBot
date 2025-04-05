@@ -3,11 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../chat.service';
 import { Router } from '@angular/router';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, HttpClientModule, SidebarComponent],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
@@ -19,11 +21,24 @@ export class ChatComponent {
   userAvatar: string = 'assets/images/usuario.png';
   botAvatar: string = 'assets/images/maquina.png';
 
-  constructor(private chatService: ChatService ,private router: Router) { }
+  showSidebar: boolean = false;
+  modoOscuro: boolean = false;
+
+  constructor(private chatService: ChatService, private router: Router) {}
+
+  toggleSidebar() {
+    this.showSidebar = !this.showSidebar;
+  }
+
+  isMobileScreen(): boolean {
+    return window.innerWidth <= 576;
+  }
+
   logout() {
     localStorage.removeItem('usuarioLogueado');
     this.router.navigate(['/login']);
   }
+
   sendMessage() {
     if (this.newMessage.trim() !== '' || this.selectedImage) {
       let messageContent: string = '';
@@ -67,10 +82,10 @@ export class ChatComponent {
   onImageSelected(event: any) {
     this.selectedImage = event.target.files[0];
   }
+
   resetConversation() {
     this.chatService.resetChat().subscribe(() => {
       this.messages = [];
     });
   }
-
 }

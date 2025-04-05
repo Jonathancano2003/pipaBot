@@ -1,70 +1,69 @@
-<div class="chat-header d-flex justify-content-end p-3">
-  <button class="btn btn-outline-danger btn-sm logout-btn" (click)="logout()">Cerrar sesión</button>
+<div class="d-flex flex-row" style="height: 100vh; overflow: hidden;">
+  <!-- SIDEBAR -->
+  <div *ngIf="showSidebar"
+       class="sidebar-container bg-dark text-light"
+       [ngClass]="{ 'mobile-fullscreen': isMobileScreen() }">
+    <!-- Botón para volver al chat (móvil) -->
+    <div class="d-block d-sm-none text-end p-2">
+      <button class="btn btn-outline-light btn-sm" (click)="toggleSidebar()">🔙 Volver al chat</button>
+    </div>
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <!-- CHAT -->
+  <div class="flex-grow-1 d-flex flex-column"
+       [class.d-none]="showSidebar && isMobileScreen()">
+
+    <!-- CABECERA -->
+    <div class="card-header d-flex justify-content-between align-items-center bg-info text-white rounded-0">
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-light btn-sm" (click)="toggleSidebar()">☰</button>
+        <span class="fw-bold">PipaBot</span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <!-- TOGGLE -->
+       <!-- TOGGLE MINI MODO OSCURO -->
+<div class="modo-toggle me-2">
+  <input type="checkbox" id="checkbox" [(ngModel)]="modoOscuro" />
+  <label for="checkbox" class="label-mini"></label>
 </div>
 
 
-<!-- Aquí tu contenido del chat -->
-
-<section>
-    <div class="container py-5">
-      <div class="row d-flex justify-content-center">
-        <div class="col-md-10 col-lg-8 chat-container">
-          <div class="card" id="chat1" style="border-radius: 15px;">
-            
-            <!-- Cabecera del Chat -->
-            <div class="card-header d-flex justify-content-between align-items-center p-3 bg-info text-white">
-              <p class="mb-0 fw-bold">PipaBot</p>
-            </div>
-  
-            <!-- Cuerpo del Chat -->
-            <div class="card-body chat-messages">
-              
-              <!-- Mensajes -->
-              <div *ngFor="let message of messages" class="d-flex mb-3"
-                [ngClass]="{'justify-content-start': message.sender === 'machine', 'justify-content-end': message.sender === 'user'}">
-  
-                <!-- Avatar del Bot -->
-                <img *ngIf="message.sender === 'machine'" [src]="message.avatar" alt="Bot" class="rounded-circle avatar">
-  
-                <!-- Contenedor de mensaje -->
-                <div class="message-box" 
-                     [ngClass]="{'user-message': message.sender === 'user', 'machine-message': message.sender === 'machine'}">
-                  <span *ngIf="message.type === 'text'" class="small">{{ message.content }}</span>
-                  <img *ngIf="message.type === 'image'" [src]="message.content" alt="Imagen" class="img-fluid rounded">
-                </div>
-  
-                <!-- Avatar del Usuario -->
-                <img *ngIf="message.sender === 'user'" [src]="message.avatar" alt="User" class="rounded-circle avatar">
-              </div>
-  
-            </div>
-  
-            <!-- Área de entrada de texto -->
-            <div class="card-footer p-3">
-              <div class="input-container">
-                <input type="text" class="form-control" placeholder="Escribe un mensaje..." [(ngModel)]="newMessage" (keyup.enter)="sendMessage()">
-                
-                <!-- Botón de enviar con icono -->
-                <button class="btn btn-primary" type="button" (click)="sendMessage()">
-                  <img src="assets/images/send-2.png" alt="Enviar">
-                </button>
-                
-                <!-- Botón de adjuntar imagen con icono -->
-                <input type="file" id="image-upload" accept="image/*" (change)="onImageSelected($event)" hidden>
-                <label for="image-upload" class="btn btn-secondary">
-                  <img src="assets/images/upload.png" alt="Adjuntar imagen">
-                </label>
-              </div>
-            </div>
-  
-          </div>
+        <div class="btn-group">
+          <button class="btn btn-outline-warning btn-sm" (click)="resetConversation()">🗑️ Reiniciar chat</button>
+          <button class="btn btn-outline-danger btn-sm" (click)="logout()">Cerrar sesión</button>
         </div>
       </div>
     </div>
-  </section>
-  <button class="btn btn-outline-warning reset-btn" (click)="resetConversation()">
-    🗑️ Reiniciar chat
-  </button>
-  
 
-  
+    <!-- MENSAJES -->
+    <div class="chat-messages" [ngClass]="{ 'modo-oscuro': modoOscuro }">
+      <div *ngFor="let message of messages" class="d-flex mb-3"
+        [ngClass]="{ 'justify-content-start': message.sender === 'machine', 'justify-content-end': message.sender === 'user' }">
+        <img *ngIf="message.sender === 'machine'" [src]="message.avatar" alt="Bot" class="avatar">
+        <div class="message-box"
+             [ngClass]="{ 'user-message': message.sender === 'user', 'machine-message': message.sender === 'machine' }">
+          <span *ngIf="message.type === 'text'">{{ message.content }}</span>
+          <img *ngIf="message.type === 'image'" [src]="message.content" alt="Imagen" class="img-fluid rounded">
+        </div>
+        <img *ngIf="message.sender === 'user'" [src]="message.avatar" alt="User" class="avatar">
+      </div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="card-footer rounded-0">
+      <div class="input-container">
+        <input type="text" class="form-control" placeholder="Escribe un mensaje..." [(ngModel)]="newMessage" (keyup.enter)="sendMessage()">
+        <button class="btn btn-primary" (click)="sendMessage()">
+          <img src="assets/images/send-2.png" alt="Enviar">
+        </button>
+        <input type="file" id="image-upload" accept="image/*" (change)="onImageSelected($event)" hidden>
+        <label for="image-upload" class="btn btn-secondary mb-0">
+          <img src="assets/images/upload.png" alt="Adjuntar imagen">
+        </label>
+      </div>
+    </div>
+
+  </div>
+</div>
