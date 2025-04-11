@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'http://127.0.0.1:8000/api';  // Asegúrate de usar la URL correcta
+  private apiUrl = 'https://pipabot.nite.black/api';  // Asegúrate de usar la URL correcta
 
   constructor(private http: HttpClient) {}
 

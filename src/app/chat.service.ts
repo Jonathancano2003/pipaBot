@@ -13,7 +13,7 @@ export interface Chat {
 })
 export class ChatService {
 
-  private backendUrl = 'http://127.0.0.1:8000/api/gemini/receive';
+  private backendUrl = 'https://pipabot.nite.black/api/gemini/receive';
 
   private mockChats: Chat[] = [
     { id: 1, titulo: 'Imagen prueba', resumen: 'Probando imágenes en el chat', fecha: '2025-04-01' },
@@ -32,7 +32,7 @@ export class ChatService {
   }
 
   resetChat() {
-    return this.http.post('http://127.0.0.1:8000/api/gemini/reset', {});
+    return this.http.post('https://pipabot.nite.black/api/gemini/reset', {});
   }
 
   // NUEVO: devolver mock de chats
