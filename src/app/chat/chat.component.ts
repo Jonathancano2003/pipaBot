@@ -17,6 +17,7 @@ export class ChatComponent {
   messages: { type: 'text' | 'image', content: string, sender: 'user' | 'machine', avatar?: string }[] = [];
   newMessage: string = '';
   selectedImage: File | null = null;
+  imagePreview: string | null = null;
 
   userAvatar: string = 'assets/images/usuario.png';
   botAvatar: string = 'assets/images/maquina.png';
@@ -40,33 +41,53 @@ export class ChatComponent {
   }
 
   sendMessage() {
-    if (this.newMessage.trim() !== '' || this.selectedImage) {
-      let messageContent: string = '';
-      if (this.newMessage.trim() !== '') {
-        this.messages.push({ type: 'text', content: this.newMessage, sender: 'user', avatar: this.userAvatar });
-        messageContent = this.newMessage;
+    const trimmedMessage = this.newMessage.trim();
+  
+    // Si no hay mensaje ni imagen, no hacemos nada
+    if (!trimmedMessage && !this.selectedImage) return;
+  
+    // Agregar mensaje al chat
+    if (trimmedMessage) {
+      this.messages.push({
+        type: 'text',
+        content: trimmedMessage,
+        sender: 'user',
+        avatar: this.userAvatar
+      });
+    }
+  
+    // Si hay imagen, procesarla con FileReader
+    if (this.selectedImage) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const dataUrl: string = e.target.result;
+        const base64Data = dataUrl.split(',')[1];
+        const mimeType = dataUrl.match(/^data:(.*?);base64/)?.[1] || 'image/jpeg';
+  
+        // Mostrar preview en el chat
+        this.messages.push({
+          type: 'image',
+          content: dataUrl,
+          sender: 'user',
+          avatar: this.userAvatar
+        });
+  
+        // Enviar mensaje + imagen al backend
+        this.enviarMensajeAlBackend(trimmedMessage, base64Data, mimeType);
+  
+        // Limpiar
+        this.selectedImage = null;
+        this.imagePreview = null;
         this.newMessage = '';
-      }
-
-      if (this.selectedImage) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const dataUrl: string = e.target.result;
-          const base64Data = dataUrl.split(',')[1];
-          const mimeType = dataUrl.match(/^data:(.*?);base64/)?.[1] || 'image/jpeg';
-
-          this.messages.push({ type: 'image', content: dataUrl, sender: 'user', avatar: this.userAvatar });
-          this.selectedImage = null;
-
-          this.enviarMensajeAlBackend(messageContent, base64Data, mimeType);
-        };
-        reader.readAsDataURL(this.selectedImage);
-        return;
-      }
-
-      this.enviarMensajeAlBackend(messageContent, undefined, undefined);
+      };
+      reader.readAsDataURL(this.selectedImage);
+    } else {
+      // Solo texto
+      this.enviarMensajeAlBackend(trimmedMessage);
+      this.newMessage = '';
     }
   }
+  
 
   enviarMensajeAlBackend(messageContent: string, imageBase64Data?: string, mimeType?: string) {
     this.chatService.sendMessage(messageContent, imageBase64Data, mimeType).subscribe(
@@ -80,7 +101,21 @@ export class ChatComponent {
   }
 
   onImageSelected(event: any) {
-    this.selectedImage = event.target.files[0];
+    const archivo = event.target.files[0];
+    if (archivo) {
+      this.selectedImage = archivo;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(archivo);
+    }
+  }
+
+  removeImage() {
+    this.selectedImage = null;
+    this.imagePreview = null;
   }
 
   resetConversation() {

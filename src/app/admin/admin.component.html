@@ -1,9 +1,47 @@
-<div class="admin-wrapper">
-    <h2>Configuración de Prompt del Bot</h2>
+<div class="admin-card-wrapper d-flex justify-content-center align-items-center px-3 py-4">
+  <div class="card admin-card w-100" style="max-width: 720px;">
+    <div class="bg"></div>
+    <div class="blob"></div>
 
-    <textarea [(ngModel)]="prompt" rows="15" placeholder="Escribe el nuevo prompt aquí..."></textarea>
+    <div class="position-relative p-4" style="z-index: 3;">
+      <h3 class="mb-3 text-center">Gestión de Prompts</h3>
 
-    <button class="btn" (click)="updatePrompt()">Actualizar Prompt</button>
+      <!-- Mensajes -->
+      <div *ngIf="successMensaje" class="alerta-success text-success fw-semibold mb-3">
+        {{ successMensaje }}
+      </div>
 
-    <p class="status">{{ status }}</p>
+      <div *ngIf="errorMensaje" class="alerta-error text-danger fw-semibold mb-3">
+        {{ errorMensaje }}
+      </div>
+
+      <!-- Prompt actual -->
+      <div class="mb-3">
+        <label for="nuevoPrompt" class="form-label">Prompt actual</label>
+        <textarea [(ngModel)]="nuevoPrompt" id="nuevoPrompt" rows="4" class="form-control" placeholder="Escribe el nuevo prompt aquí..."></textarea>
+      </div>
+
+      <button class="btn btn-danger w-100 mb-3" (click)="borrarTextarea()">Borrar contenido</button>
+
+      <!-- Botones -->
+      <div class="d-flex flex-column flex-md-row gap-2 mb-4">
+        <button class="btn btn-success w-100 w-md-50" (click)="guardarPrompt()">Guardar</button>
+        
+      </div>
+
+      <!-- Historial de prompts -->
+      <div>
+        <label for="historialPrompts" class="form-label">Historial de prompts</label>
+        <div class="input-group mb-3 align-items-stretch">
+          <select class="form-select custom-select" [(ngModel)]="promptSeleccionado" id="historialPrompts">
+            <option *ngFor="let prompt of historialPrompts" [ngValue]="prompt">
+              {{ prompt.created_at | date:'short' }} - "{{ prompt.content | slice:0:40 }}..."
+            </option>
+          </select>
+          <button class="btn btn-info rounded-0 rounded-end" (click)="cargarPromptSeleccionado()">Usar este prompt</button>
+          <button class="btn btn-outline-danger rounded-end" (click)="eliminarPromptSeleccionado()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
