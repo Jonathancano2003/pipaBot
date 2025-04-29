@@ -12,16 +12,9 @@ export interface Chat {
   providedIn: 'root'
 })
 export class ChatService {
-
   private backendUrl = 'https://pipabot.nite.black/api/gemini/receive';
 
-  private mockChats: Chat[] = [
-    { id: 1, titulo: 'Imagen prueba', resumen: 'Probando imágenes en el chat', fecha: '2025-04-01' },
-    { id: 2, titulo: 'Prueba oscura', resumen: 'Tema oscuro implementado', fecha: '2025-03-30' },
-    { id: 3, titulo: 'Estilo estilo', resumen: 'prueba ', fecha: '2025-03-28' }
-  ];
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   sendMessage(message: string, imageBase64?: string, imageMime?: string) {
     return this.http.post(this.backendUrl, {
@@ -35,8 +28,19 @@ export class ChatService {
     return this.http.post('https://pipabot.nite.black/api/gemini/reset', {});
   }
 
-  // NUEVO: devolver mock de chats
-  getChats(): Chat[] {
-    return this.mockChats;
+  getChatsFromBackend() {
+    return this.http.get<Chat[]>('https://pipabot.nite.black/api/chats');
+  }
+
+  addChat(titulo: string, resumen: string, mensajes: any[]) {
+    return this.http.post('https://pipabot.nite.black/api/chats', {
+      titulo,
+      resumen,
+      mensajes
+    });
+  }
+
+  getChatById(id: number) {
+    return this.http.get<any>(`https://pipabot.nite.black/api/chats/${id}`);
   }
 }

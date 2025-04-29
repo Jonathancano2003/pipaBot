@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Chat } from '../chat.service'; // ← CORRECTO
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Chat } from '../chat.service';
 
 @Component({
   selector: 'app-card-chat',
@@ -10,4 +10,9 @@ import { Chat } from '../chat.service'; // ← CORRECTO
 })
 export class CardChatComponent {
   @Input() chat!: Chat;
+  @Output() cargarChat = new EventEmitter<number>();
+
+  onCargarChat() {
+    this.cargarChat.emit(this.chat.id);
+  }
 }

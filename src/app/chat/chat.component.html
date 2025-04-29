@@ -1,18 +1,14 @@
 <div class="d-flex flex-row" style="height: 100vh; overflow: hidden;">
   <!-- SIDEBAR -->
-  <div *ngIf="showSidebar"
-       class="sidebar-container bg-dark text-light"
-       [ngClass]="{ 'mobile-fullscreen': isMobileScreen() }">
+  <div *ngIf="showSidebar" class="sidebar-container bg-dark text-light" [ngClass]="{ 'mobile-fullscreen': isMobileScreen() }">
     <div class="d-block d-sm-none text-end p-2">
       <button class="btn btn-outline-light btn-sm" (click)="toggleSidebar()">🔙 Volver al chat</button>
     </div>
-    <app-sidebar></app-sidebar>
+    <app-sidebar (chatSeleccionado)="cargarChat($event)" (nuevoChat)="nuevoChat()"></app-sidebar>
   </div>
 
   <!-- CHAT -->
-  <div class="flex-grow-1 d-flex flex-column position-relative"
-       [class.d-none]="showSidebar && isMobileScreen()">
-
+  <div class="flex-grow-1 d-flex flex-column position-relative" [class.d-none]="showSidebar && isMobileScreen()">
     <!-- CABECERA -->
     <div class="card-header d-flex justify-content-between align-items-center bg-info text-white rounded-0">
       <div class="d-flex align-items-center gap-2">
@@ -28,18 +24,17 @@
 
         <div class="btn-group">
           <button class="btn btn-outline-warning btn-sm" (click)="resetConversation()">🗑️ Reiniciar chat</button>
+          <button class="btn btn-outline-success btn-sm" (click)="guardarChat()">💾 Guardar chat</button>
           <button class="btn btn-outline-danger btn-sm" (click)="logout()">Cerrar sesión</button>
         </div>
-      </div>
+      </div>  
     </div>
 
     <!-- MENSAJES -->
     <div class="chat-messages" [ngClass]="{ 'modo-oscuro': modoOscuro }">
-      <div *ngFor="let message of messages" class="d-flex mb-3"
-        [ngClass]="{ 'justify-content-start': message.sender === 'machine', 'justify-content-end': message.sender === 'user' }">
+      <div *ngFor="let message of messages" class="d-flex mb-3" [ngClass]="{ 'justify-content-start': message.sender === 'machine', 'justify-content-end': message.sender === 'user' }">
         <img *ngIf="message.sender === 'machine'" [src]="message.avatar" alt="Bot" class="avatar">
-        <div class="message-box"
-             [ngClass]="{ 'user-message': message.sender === 'user', 'machine-message': message.sender === 'machine' }">
+        <div class="message-box" [ngClass]="{ 'user-message': message.sender === 'user', 'machine-message': message.sender === 'machine' }">
           <span *ngIf="message.type === 'text'">{{ message.content }}</span>
           <img *ngIf="message.type === 'image'" [src]="message.content" alt="Imagen" class="img-fluid rounded">
         </div>
@@ -47,7 +42,7 @@
       </div>
     </div>
 
-    <!-- PREVIEW DE IMAGEN flotante -->
+    <!-- PREVIEW DE IMAGEN -->
     <div *ngIf="imagePreview" class="image-preview-container">
       <img [src]="imagePreview" alt="Imagen seleccionada" class="img-thumbnail rounded shadow">
       <button class="btn btn-sm btn-close" (click)="removeImage()" aria-label="Cerrar"></button>
@@ -66,6 +61,5 @@
         </label>
       </div>
     </div>
-
   </div>
 </div>

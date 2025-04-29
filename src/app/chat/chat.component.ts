@@ -42,11 +42,8 @@ export class ChatComponent {
 
   sendMessage() {
     const trimmedMessage = this.newMessage.trim();
-  
-    // Si no hay mensaje ni imagen, no hacemos nada
     if (!trimmedMessage && !this.selectedImage) return;
-  
-    // Agregar mensaje al chat
+
     if (trimmedMessage) {
       this.messages.push({
         type: 'text',
@@ -55,49 +52,57 @@ export class ChatComponent {
         avatar: this.userAvatar
       });
     }
-  
-    // Si hay imagen, procesarla con FileReader
+
     if (this.selectedImage) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const dataUrl: string = e.target.result;
         const base64Data = dataUrl.split(',')[1];
         const mimeType = dataUrl.match(/^data:(.*?);base64/)?.[1] || 'image/jpeg';
-  
-        // Mostrar preview en el chat
+
         this.messages.push({
           type: 'image',
           content: dataUrl,
           sender: 'user',
           avatar: this.userAvatar
         });
-  
-        // Enviar mensaje + imagen al backend
+
         this.enviarMensajeAlBackend(trimmedMessage, base64Data, mimeType);
-  
-        // Limpiar
         this.selectedImage = null;
         this.imagePreview = null;
         this.newMessage = '';
       };
       reader.readAsDataURL(this.selectedImage);
     } else {
-      // Solo texto
       this.enviarMensajeAlBackend(trimmedMessage);
       this.newMessage = '';
     }
   }
-  
 
   enviarMensajeAlBackend(messageContent: string, imageBase64Data?: string, mimeType?: string) {
     this.chatService.sendMessage(messageContent, imageBase64Data, mimeType).subscribe(
       (response: any) => {
-        this.messages.push({ type: 'text', content: response.response, sender: 'machine', avatar: this.botAvatar });
+        this.messages.push({
+          type: 'text',
+          content: response.response,
+          sender: 'machine',
+          avatar: this.botAvatar
+        });
       },
       (error) => {
         console.error('Error del backend:', error);
       }
     );
+  }
+
+  guardarChat() {
+    const titulo = prompt('Ponle un título al chat:') || 'Sin título';
+    const resumen = this.messages.length > 0 ? this.messages[0].content.substring(0, 50) : 'Sin resumen';
+    const mensajes = this.messages;
+
+    this.chatService.addChat(titulo, resumen, mensajes).subscribe(() => {
+      console.log('Chat guardado exitosamente');
+    });
   }
 
   onImageSelected(event: any) {
@@ -119,8 +124,21 @@ export class ChatComponent {
   }
 
   resetConversation() {
-    this.chatService.resetChat().subscribe(() => {
-      this.messages = [];
+    this.messages = [];
+  }
+
+  cargarChat(id: number) {
+    this.chatService.getChatById(id).subscribe(data => {
+      if (data && data.mensajes) {
+        this.messages = data.mensajes;
+      }
     });
+  }
+
+  nuevoChat() {
+    this.messages = [];
+    this.newMessage = '';
+    this.selectedImage = null;
+    this.imagePreview = null;
   }
 }
