@@ -1,6 +1,8 @@
 <div class="d-flex flex-row" style="height: 100vh; overflow: hidden;">
   <!-- SIDEBAR -->
-  <div *ngIf="showSidebar" class="sidebar-container bg-dark text-light" [ngClass]="{ 'mobile-fullscreen': isMobileScreen() }">
+  <div *ngIf="showSidebar"
+       class="sidebar-container bg-dark text-light"
+       [ngClass]="{ 'mobile-fullscreen': isMobileScreen() }">
     <div class="d-block d-sm-none text-end p-2">
       <button class="btn btn-outline-light btn-sm" (click)="toggleSidebar()">🔙 Volver al chat</button>
     </div>
@@ -8,50 +10,76 @@
   </div>
 
   <!-- CHAT -->
-  <div class="flex-grow-1 d-flex flex-column position-relative" [class.d-none]="showSidebar && isMobileScreen()">
+  <div class="flex-grow-1 d-flex flex-column position-relative"
+       [class.d-none]="showSidebar && isMobileScreen()">
+
     <!-- CABECERA -->
     <div class="card-header d-flex justify-content-between align-items-center bg-info text-white rounded-0">
       <div class="d-flex align-items-center gap-2">
         <button class="btn btn-outline-light btn-sm" (click)="toggleSidebar()">☰</button>
         <span class="fw-bold">PipaBot</span>
       </div>
-
       <div class="d-flex align-items-center gap-2">
         <div class="modo-toggle me-2">
           <input type="checkbox" id="checkbox" [(ngModel)]="modoOscuro" />
           <label for="checkbox" class="label-mini"></label>
         </div>
-
         <div class="btn-group">
           <button class="btn btn-outline-warning btn-sm" (click)="resetConversation()">🗑️ Reiniciar chat</button>
           <button class="btn btn-outline-success btn-sm" (click)="guardarChat()">💾 Guardar chat</button>
           <button class="btn btn-outline-danger btn-sm" (click)="logout()">Cerrar sesión</button>
         </div>
-      </div>  
+      </div>
     </div>
 
     <!-- MENSAJES -->
-    <div class="chat-messages" [ngClass]="{ 'modo-oscuro': modoOscuro }">
-      <div *ngFor="let message of messages" class="d-flex mb-3" [ngClass]="{ 'justify-content-start': message.sender === 'machine', 'justify-content-end': message.sender === 'user' }">
+    <div #chatMessages class="chat-messages chat-body" [ngClass]="{ 'modo-oscuro': modoOscuro }">
+      <div *ngFor="let message of messages" class="d-flex mb-3"
+        [ngClass]="{ 'justify-content-start': message.sender === 'machine', 'justify-content-end': message.sender === 'user' }">
         <img *ngIf="message.sender === 'machine'" [src]="message.avatar" alt="Bot" class="avatar">
-        <div class="message-box" [ngClass]="{ 'user-message': message.sender === 'user', 'machine-message': message.sender === 'machine' }">
-          <span *ngIf="message.type === 'text'">{{ message.content }}</span>
+        <div class="message-box"
+             [ngClass]="{ 'user-message': message.sender === 'user', 'machine-message': message.sender === 'machine' }">
+          <span *ngIf="message.type === 'text'">
+            {{ message.content }}
+            <br>
+            <small class="text-muted" *ngIf="message.timestamp">
+              {{ message.timestamp | date:'shortTime' }}
+            </small>
+          </span>
           <img *ngIf="message.type === 'image'" [src]="message.content" alt="Imagen" class="img-fluid rounded">
         </div>
         <img *ngIf="message.sender === 'user'" [src]="message.avatar" alt="User" class="avatar">
       </div>
+      <!-- Indicador "escribiendo..." -->
+      <div *ngIf="isTyping" class="d-flex justify-content-start align-items-center mb-3">
+        <img [src]="botAvatar" alt="Bot" class="avatar">
+        <div class="message-box machine-message">
+          <span><i>PipaBot está escribiendo...</i></span>
+        </div>
+      </div>
     </div>
 
-    <!-- PREVIEW DE IMAGEN -->
+    <!-- RESPUESTAS RÁPIDAS -->
+    <div class="quick-replies-container border-top">
+      <button *ngFor="let reply of quickReplies" class="btn btn-sm btn-outline-secondary" (click)="usarRespuestaRapida(reply)">
+        {{ reply }}
+      </button>
+    </div>
+
+    <!-- PREVIEW DE IMAGEN flotante -->
     <div *ngIf="imagePreview" class="image-preview-container">
       <img [src]="imagePreview" alt="Imagen seleccionada" class="img-thumbnail rounded shadow">
       <button class="btn btn-sm btn-close" (click)="removeImage()" aria-label="Cerrar"></button>
     </div>
 
     <!-- INPUT -->
-    <div class="card-footer rounded-0 bg-transparent">
+    <div class="card-footer rounded-0 bg-transparent position-relative">
       <div class="input-container">
-        <input type="text" class="form-control" placeholder="Escribe un mensaje..." [(ngModel)]="newMessage" (keyup.enter)="sendMessage()">
+        <input type="text" class="form-control"
+               placeholder="Escribe un mensaje..."
+               [(ngModel)]="newMessage"
+               (input)="onInputChange($event)"
+               (keydown)="onInputKeydown($event)">
         <button class="btn btn-primary" (click)="sendMessage()">
           <img src="assets/images/send-2.png" alt="Enviar">
         </button>
@@ -59,6 +87,15 @@
         <label for="image-upload" class="btn btn-secondary mb-0">
           <img src="assets/images/upload.png" alt="Adjuntar imagen">
         </label>
+      </div>
+
+      <!-- Menú contextual de comandos -->
+      <div *ngIf="showCommandMenu" class="command-menu shadow rounded bg-white p-2 position-absolute w-100" style="bottom:55px; z-index:50;">
+        <div *ngFor="let cmd of filteredCommands; let i=index"
+             [ngClass]="{'bg-info text-white': i === commandMenuIndex, 'p-2': true, 'rounded': true, 'cursor-pointer': true}"
+             (mousedown)="selectCommand(cmd)">
+          <span class="fw-bold">{{cmd.cmd}}</span> — <span class="fst-italic">{{cmd.desc}}</span>
+        </div>
       </div>
     </div>
   </div>

@@ -2,11 +2,12 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { AdminService } from '../admin.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
@@ -17,11 +18,15 @@ export class AdminComponent implements OnInit {
   errorMensaje: string = '';
   successMensaje: string = '';
 
+  quickReplies: { id: number, text: string }[] = [];
+  nuevoReply: string = '';
+
   constructor(@Inject(AdminService) private adminService: AdminService) {}
 
   ngOnInit(): void {
     this.cargarPromptActual();
     this.cargarHistorialPrompts();
+    this.cargarQuickReplies();
   }
 
   mostrarMensajesTemporalmente(success: string = '', error: string = '') {
@@ -108,5 +113,44 @@ export class AdminComponent implements OnInit {
         this.mostrarMensajesTemporalmente('', 'No se pudo eliminar el prompt.');
       }
     );
+  }
+
+  cargarQuickReplies() {
+    this.adminService.getQuickReplies().subscribe({
+      next: (res: any) => {
+        this.quickReplies = res;
+      },
+      error: () => {
+        this.mostrarMensajesTemporalmente('', 'Error al cargar respuestas rápidas');
+      }
+    });
+  }
+
+  agregarQuickReply() {
+    const nueva = this.nuevoReply.trim();
+    if (!nueva) return;
+
+    this.adminService.addQuickReply(nueva).subscribe({
+      next: () => {
+        this.nuevoReply = '';
+        this.cargarQuickReplies();
+        this.mostrarMensajesTemporalmente('Respuesta rápida agregada.');
+      },
+      error: () => {
+        this.mostrarMensajesTemporalmente('', 'Error al agregar respuesta rápida');
+      }
+    });
+  }
+
+  eliminarQuickReply(id: number) {
+    this.adminService.deleteQuickReply(id).subscribe({
+      next: () => {
+        this.cargarQuickReplies();
+        this.mostrarMensajesTemporalmente('Respuesta rápida eliminada.');
+      },
+      error: () => {
+        this.mostrarMensajesTemporalmente('', 'No se pudo eliminar la respuesta rápida');
+      }
+    });
   }
 }

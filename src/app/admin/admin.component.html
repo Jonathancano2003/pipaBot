@@ -4,13 +4,16 @@
     <div class="blob"></div>
 
     <div class="position-relative p-4" style="z-index: 3;">
+      <div class="mb-3 text-start">
+        <a class="btn btn-outline-primary" routerLink="/chat">🔙 Volver al Chat</a>
+      </div>
+
       <h3 class="mb-3 text-center">Gestión de Prompts</h3>
 
       <!-- Mensajes -->
       <div *ngIf="successMensaje" class="alerta-success text-success fw-semibold mb-3">
         {{ successMensaje }}
       </div>
-
       <div *ngIf="errorMensaje" class="alerta-error text-danger fw-semibold mb-3">
         {{ errorMensaje }}
       </div>
@@ -26,7 +29,6 @@
       <!-- Botones -->
       <div class="d-flex flex-column flex-md-row gap-2 mb-4">
         <button class="btn btn-success w-100 w-md-50" (click)="guardarPrompt()">Guardar</button>
-        
       </div>
 
       <!-- Historial de prompts -->
@@ -42,6 +44,25 @@
           <button class="btn btn-outline-danger rounded-end" (click)="eliminarPromptSeleccionado()">Eliminar</button>
         </div>
       </div>
+
+      <!-- ============ Quick Replies (Respuestas rápidas) ============ -->
+      <div class="mt-4">
+        <h4 class="mb-2">Respuestas rápidas</h4>
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" [(ngModel)]="nuevoReply" placeholder="Añadir nueva respuesta rápida...">
+          <button class="btn btn-success" (click)="agregarQuickReply()" [disabled]="!nuevoReply.trim()">Añadir</button>
+        </div>
+
+        <div *ngIf="quickReplies.length === 0" class="text-muted">No hay respuestas rápidas aún.</div>
+        <ul class="list-group mb-0">
+          <li *ngFor="let reply of quickReplies" class="list-group-item d-flex justify-content-between align-items-center">
+            {{ reply.text }}
+            <button class="btn btn-sm btn-outline-danger" (click)="eliminarQuickReply(reply.id)">Eliminar</button>
+          </li>
+        </ul>
+      </div>
+      <!-- ============================================================= -->
     </div>
   </div>
 </div>

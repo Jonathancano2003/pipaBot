@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'https://pipabot.nite.black/api';  // Asegúrate de usar la URL correcta
+  private apiUrl = 'https://pipabot.nite.black/api';  // Cambia a la URL pública si lo subes
 
   constructor(private http: HttpClient) {}
 
@@ -29,8 +29,21 @@ export class AdminService {
   getPromptHistory(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/prompt/history`);
   }
+
   deletePrompt(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/prompt/${id}`);
   }
-  
+
+  // ============ RESPUESTAS RÁPIDAS =============
+  getQuickReplies(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/quick-replies`);
+  }
+
+  addQuickReply(text: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/quick-replies`, { text });
+  }
+
+  deleteQuickReply(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/quick-replies/${id}`);
+  }
 }

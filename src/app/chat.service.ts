@@ -43,4 +43,20 @@ export class ChatService {
   getChatById(id: number) {
     return this.http.get<any>(`https://pipabot.nite.black/api/chats/${id}`);
   }
+  setContext(mensajes: any[]) {
+    return this.http.post('https://pipabot.nite.black/api/gemini/context', { mensajes });
+  }
+  getQuickReplies() {
+    return this.http.get<{ id: number, text: string }[]>('https://pipabot.nite.black/api/quick-replies');
+  }
+  
+  addQuickReply(text: string) {
+    return this.http.post('https://pipabot.nite.black/api/quick-replies', { text });
+  }
+  
+  deleteQuickReply(id: number) {
+    return this.http.delete(`https://pipabot.nite.black/api/quick-replies/${id}`);
+  }
+  
+  
 }

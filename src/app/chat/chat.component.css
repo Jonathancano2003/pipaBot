@@ -216,3 +216,39 @@ img.img-thumbnail {
   border-radius: 50%;
   box-shadow: 0 0 4px rgba(0,0,0,0.2);
 }
+.typing-indicator .dot {
+  animation: blink 1.5s infinite;
+  animation-delay: calc(var(--i) * 0.2s);
+  display: inline-block;
+}
+
+.typing-indicator .dot:nth-child(1) { --i: 0; }
+.typing-indicator .dot:nth-child(2) { --i: 1; }
+.typing-indicator .dot:nth-child(3) { --i: 2; }
+
+@keyframes blink {
+  0%, 20% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.quick-replies-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0.5rem 1rem;
+  background-color: #f0f0f0;
+  border-top: 1px solid #ccc;
+}
+.quick-replies-container .btn {
+  white-space: nowrap;
+}
+.command-menu {
+  left: 0;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #d1d1d1;
+}
+
+.command-menu .cursor-pointer {
+  cursor: pointer;
+}

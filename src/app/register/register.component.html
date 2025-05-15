@@ -1,33 +1,40 @@
 <div class="form-overlay">
-    <div class="form-container">
-      <div class="form-logo">
-        <img src="assets/images/pipaBotLogo.png" alt="PipaBot Logo">
-      </div>
-  
-      <h2 class="form-title">Crear cuenta</h2>
-  
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <div class="form-item" [class.has-error]="isSubmitted && registerForm.get('username')?.invalid">
-          <input type="text" formControlName="username" placeholder="Usuario" />
-        </div>
-  
-        <div class="form-item" [class.has-error]="isSubmitted && registerForm.get('password')?.invalid">
-          <input type="password" formControlName="password" placeholder="Contraseña" />
-        </div>
-  
-        <div class="form-item" [class.has-error]="isSubmitted && registerForm.get('confirmPassword')?.invalid">
-          <input type="password" formControlName="confirmPassword" placeholder="Confirmar Contraseña" />
-        </div>
-  
-        <div class="form-item">
-          <button type="submit" class="form-button">
-            <span *ngIf="!loading">Registrarse</span>
-            <div class="form-loading" *ngIf="loading">
-              <span></span><span></span><span></span>
-            </div>
-          </button>
-        </div>
-      </form>
+  <div class="form-container">
+    <div class="form-logo">
+      <img src="assets/images/pipaBotLogo.png" alt="PipaBot Logo">
     </div>
+
+    <h2 class="form-title">Registro</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-item">
+        <input type="text" formControlName="username" placeholder="Usuario" />
+      </div>
+
+      <div class="form-item">
+        <input type="password" formControlName="password" placeholder="Contraseña" />
+      </div>
+
+      <div class="form-item">
+        <input type="password" formControlName="confirmPassword" placeholder="Confirmar Contraseña" />
+      </div>
+
+      <div class="form-item">
+        <re-captcha
+        [siteKey]="'6LeByy4rAAAAADXivTB2IMw2G8eM4yeededgJjee'"
+        (resolved)="onCaptchaResolved($event)">
+      </re-captcha>
+      
+      </div>
+
+      <div class="form-item">
+        <button type="submit" class="form-button">Registrarse</button>
+      </div>
+    </form>
+
+    <p class="text-center mt-3">
+      ¿Ya tienes cuenta?
+      <a routerLink="/login" class="btn btn-link text-primary p-0">Inicia sesión</a>
+    </p>
   </div>
-  
+</div>
